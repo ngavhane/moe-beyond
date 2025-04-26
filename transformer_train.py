@@ -42,7 +42,7 @@ class ExpertActivationDataset(Dataset):
         self.max_length = max_length
         self.layer_embedding = nn.Embedding(NUM_LAYERS, LAYER_EMBED_DIM)
         self.cache = OrderedDict()
-        
+
     def __len__(self):
         return len(self.csv_files)
     
@@ -56,7 +56,9 @@ class ExpertActivationDataset(Dataset):
             
         file_path = os.path.join(self.data_dir, self.csv_files[idx])
         df = pd.read_csv(file_path)
-
+        #df = df[:self.max_length]
+        #df = df.groupby('Layer ID', group_keys=False).apply(lambda x: x.head(self.max_length))
+        df = df.groupby('Layer ID', group_keys=False)[df.columns].apply(lambda x: x.head(self.max_length))
         required_columns = ['Token Embedding Vector', 'Layer ID', 'Token', 'Activated Expert IDs']
         for col in required_columns:
             if col not in df.columns:
@@ -77,14 +79,16 @@ class ExpertActivationDataset(Dataset):
                 torch.tensor(experts), num_classes=NUM_EXPERTS), dim=0).float()
 
         targets = torch.stack(df['Activated Expert IDs'].apply(create_multi_hot).tolist())
-        layer_embeds = self.layer_embedding(layer_ids)
+        with torch.no_grad():
+            layer_embeds = self.layer_embedding(layer_ids)
+        #layer_embeds = self.layer_embedding(layer_ids)
         token_embeddings = torch.FloatTensor(token_embeddings)
 
         combined_features = torch.cat([token_embeddings, layer_embeds], dim=-1)
         
         item = {
-            'features': combined_features,
-            'targets': targets,
+            'features': combined_features.detach().cpu(),
+            'targets': targets.detach().cpu(),
             'length': len(df)
         }
         self.cache[idx] = item
@@ -202,12 +206,12 @@ def validate(model, dataloader, device, writer, epoch):
             masked_preds = preds * mask.unsqueeze(-1)
             masked_targets = targets * mask.unsqueeze(-1)
             
-            all_preds.append(masked_preds.cpu())
-            all_targets.append(masked_targets.cpu())
+            all_preds.append(masked_preds.cpu().flatten())
+            all_targets.append(masked_targets.cpu().flatten())
 
     avg_loss = total_loss / valid_positions
-    all_preds = torch.cat(all_preds).numpy().flatten()
-    all_targets = torch.cat(all_targets).numpy().flatten()
+    all_preds = torch.cat(all_preds).numpy()
+    all_targets = torch.cat(all_targets).numpy()
     
     acc = accuracy_score(all_targets, all_preds)
     f1 = f1_score(all_targets, all_preds, average='macro')
@@ -229,7 +233,8 @@ def main():
     parser.add_argument('--eval-only', action='store_true')
     parser.add_argument('--checkpoint-path', type=str, default='./logs/best_model.pth')
     parser.add_argument('--max-files', type=int, default=None, help='Maximum number of CSV files to use (for exploration)')
-
+    parser.add_argument('--max-length', type=int, default=2048, help='Maximum sequence length per sample (token rows)')
+    
     # New hyperparameters
     parser.add_argument('--num-layers', type=int, default=4,
                         help='Number of transformer encoder layers')
@@ -246,7 +251,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Dataset and DataLoaders
-    dataset = ExpertActivationDataset(args.data_dir, max_files=args.max_files)
+    dataset = ExpertActivationDataset(args.data_dir, max_length=args.max_length, max_files=args.max_files)
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
