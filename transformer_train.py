@@ -35,9 +35,10 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 class ExpertActivationDataset(Dataset):
-    def __init__(self, data_dir, max_length=MAX_LENGTH):
+    def __init__(self, data_dir, max_length=MAX_LENGTH, max_files=None):
         self.data_dir = data_dir
-        self.csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
+        all_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
+        self.csv_files = all_files[:max_files] if max_files else all_files
         self.max_length = max_length
         self.layer_embedding = nn.Embedding(NUM_LAYERS, LAYER_EMBED_DIM)
         self.cache = OrderedDict()
@@ -227,7 +228,8 @@ def main():
     parser.add_argument('--log-dir', type=str, default='./logs')
     parser.add_argument('--eval-only', action='store_true')
     parser.add_argument('--checkpoint-path', type=str, default='./logs/best_model.pth')
-    
+    parser.add_argument('--max-files', type=int, default=None, help='Maximum number of CSV files to use (for exploration)')
+
     # New hyperparameters
     parser.add_argument('--num-layers', type=int, default=4,
                         help='Number of transformer encoder layers')
@@ -244,7 +246,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Dataset and DataLoaders
-    dataset = ExpertActivationDataset(args.data_dir)
+    dataset = ExpertActivationDataset(args.data_dir, max_files=args.max_files)
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
