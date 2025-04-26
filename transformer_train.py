@@ -9,7 +9,7 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader, random_split
 from torch.nn.utils.rnn import pad_sequence
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
-from torch.cuda.amp import autocast, GradScaler
+from torch.amp import autocast, GradScaler
 from sklearn.metrics import accuracy_score, f1_score
 from tensorboardX import SummaryWriter
 import random
@@ -64,15 +64,15 @@ class ExpertActivationDataset(Dataset):
 
         token_embeddings = np.stack(
             df['Token Embedding Vector'].apply(
-                lambda x: np.array(x.split(','), dtype=np.float32)
+                lambda x: np.array(x.strip('[]').split(','), dtype=np.float32)
             ).values
         )
 
         layer_ids = torch.LongTensor(df['Layer ID'].values)
-        tokens = torch.LongTensor(df['Token'].values)
+        #tokens = torch.LongTensor(df['Token'].values)
 
         def create_multi_hot(expert_ids):
-            experts = list(map(int, expert_ids.split(',')))
+            experts = list(map(int, expert_ids.strip('[]').split(',')))
             return torch.sum(torch.nn.functional.one_hot(
                 torch.tensor(experts), num_classes=NUM_EXPERTS), dim=0).float()
 
@@ -144,7 +144,7 @@ def train(model, dataloader, optimizer, device, writer, epoch, scaler):
 
         optimizer.zero_grad()
         
-        with autocast():
+        with autocast(device_type='cuda'):
             outputs = model(features, mask)
             loss = (criterion(outputs, targets) * mask.unsqueeze(-1)).sum()
             valid_positions = mask.sum() * NUM_EXPERTS
@@ -270,7 +270,7 @@ def main():
         {'params': model.output_layer.parameters(), 'lr': args.lr*0.8}
     ], weight_decay=0.01)
     
-    scaler = GradScaler()
+    scaler = GradScaler('cuda')
     writer = SummaryWriter(log_dir=args.log_dir)
 
     # Checkpoint Loading
