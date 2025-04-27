@@ -76,7 +76,7 @@ def main():
             csv_writer = csv.writer(csvfile)
             # Write header without prompt number and prompt text
             csv_writer.writerow([
-                "Layer ID", "Batch Number", "Token", "Activated Expert IDs", "Token Embedding Vector"
+                "Layer ID", "Batch Number", "Token", "Activated Expert IDs"
             ])
             
             process_prompt(prompt_text, csv_writer, tokenizer, model)
@@ -134,7 +134,7 @@ def process_prompt(text, csv_writer, tokenizer, model):
 
                 # Write row to CSV without prompt number or prompt text
                 csv_writer.writerow([
-                    layer_idx, b, tok, ids, embedding
+                    layer_idx, b, tok, ids
                 ])
 
     finally:
