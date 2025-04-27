@@ -11,7 +11,7 @@ def main():
     if len(sys.argv) > 1:
         input_file = sys.argv[1]
     else:
-        input_file = "tagged_puffin_prompts.txt"
+        input_file = "../prompt_datasets/tagged_puffin_prompts.txt"
    
     skip_until_prompt = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 

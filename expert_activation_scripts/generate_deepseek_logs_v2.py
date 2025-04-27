@@ -11,7 +11,7 @@ def main():
     if len(sys.argv) > 1:
         input_file = sys.argv[1]
     else:
-        input_file = "tagged_puffin_prompts.txt"
+        input_file = "prompts.txt"
    
     skip_until_prompt = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 
@@ -59,10 +59,8 @@ def main():
     
     # Process all prompts
 
-    output_dir = os.path.expanduser("training_data_eamc")
+    output_dir = os.path.expanduser("~/ngavhane-fs/dataset_csvs")
     os.makedirs(output_dir, exist_ok=True)
-
-    i = 0
 
     for prompt_num, prompt_text in prompts:
         prompt_text = prompt_text.strip()
@@ -74,15 +72,12 @@ def main():
             csv_writer = csv.writer(csvfile)
             # Write header without prompt number and prompt text
             csv_writer.writerow([
-                "Layer ID", "Batch Number", "Token", "Activated Expert IDs"
+                "Layer ID", "Batch Number", "Token", "Activated Expert IDs", "Token Embedding Vector"
             ])
             
             process_prompt(prompt_text, csv_writer, tokenizer, model)
             gc.collect()
             torch.cuda.empty_cache()
-        i += 1
-        if i > 1000:
-            break
 
     print(f"All prompts processed.")
 
@@ -107,6 +102,7 @@ def process_prompt(text, csv_writer, tokenizer, model):
                         "token_pos": t,
                         "expert_ids": ids[b, t].tolist(),
                         "expert_weights": weights[b, t].tolist(),
+                        "token_embedding": hidden_states[b, t].detach().cpu().tolist(),
                     })
         return _hook
 
@@ -130,10 +126,11 @@ def process_prompt(text, csv_writer, tokenizer, model):
                 b, t = evt["batch"], evt["token_pos"]
                 ids = evt["expert_ids"]
                 tok = tokenizer.convert_ids_to_tokens(int(inputs.input_ids[b, t]))
+                embedding = evt["token_embedding"]
 
                 # Write row to CSV without prompt number or prompt text
                 csv_writer.writerow([
-                    layer_idx, b, tok, ids
+                    layer_idx, b, tok, ids, embedding
                 ])
 
     finally:
