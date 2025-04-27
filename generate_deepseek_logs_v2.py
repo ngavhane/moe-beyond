@@ -5,6 +5,7 @@ import re
 import csv
 from collections import defaultdict
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import BitsAndBytesConfig
 import gc
 
 def main():
@@ -20,10 +21,13 @@ def main():
     # Load model
     print(f"Loading model {checkpoint}...")
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
+    quantization_config = BitsAndBytesConfig(
+        load_in_8bit=True,  # or load_in_4bit=True if you want 4-bit
+    )
     model = AutoModelForCausalLM.from_pretrained(
         checkpoint,
         trust_remote_code=True,
-        load_in_8bit=True,
+        quantization_config=quantization_config,
         device_map="auto"
     ).eval()
     print("Model loaded.")
