@@ -1,0 +1,300 @@
+>>>>>>>>>>>PROMPT_START: 1
+what measures do film makers take to protect child actors in horror films or emotionally distressing scenes?
+>>>>>>>>>>>>PROMPT_END: 1
+>>>>>>>>>>>PROMPT_START: 2
+Why does Reddit search often fail.?
+>>>>>>>>>>>>PROMPT_END: 2
+>>>>>>>>>>>PROMPT_START: 3
+Why did the US fail in Vietnam and why is never really taught in schools?
+>>>>>>>>>>>>PROMPT_END: 3
+>>>>>>>>>>>PROMPT_START: 4
+Does I-Doser work? How do binaural beats work?
+>>>>>>>>>>>>PROMPT_END: 4
+>>>>>>>>>>>PROMPT_START: 5
+what is car/motion sickness?
+>>>>>>>>>>>>PROMPT_END: 5
+>>>>>>>>>>>PROMPT_START: 6
+why do different parts of vision have different "refresh rates"?
+>>>>>>>>>>>>PROMPT_END: 6
+>>>>>>>>>>>PROMPT_START: 7
+Are the vitamin compounds found in energy drinks and energy shots as helpful to the body as taking a vitamin supplement? Why or why not?
+>>>>>>>>>>>>PROMPT_END: 7
+>>>>>>>>>>>PROMPT_START: 8
+What's the device used as a power supply to desktop computers?
+>>>>>>>>>>>>PROMPT_END: 8
+>>>>>>>>>>>PROMPT_START: 9
+why do I have no problem napping throughout they day but can't sleep on a night if there's a light on?
+>>>>>>>>>>>>PROMPT_END: 9
+>>>>>>>>>>>PROMPT_START: 10
+Why does the United State's education fall short of that of the rest of the developed world?
+>>>>>>>>>>>>PROMPT_END: 10
+>>>>>>>>>>>PROMPT_START: 11
+The Mandela Effect
+>>>>>>>>>>>>PROMPT_END: 11
+>>>>>>>>>>>PROMPT_START: 12
+Why do speakers make a buzzing noise when the volume is turned up?
+>>>>>>>>>>>>PROMPT_END: 12
+>>>>>>>>>>>PROMPT_START: 13
+If I'm caught by police committing a crime but have zero ID on me, and refuse to give my name, what happens next?
+>>>>>>>>>>>>PROMPT_END: 13
+>>>>>>>>>>>PROMPT_START: 14
+Why is raw/undercooked meat called 'rare'?
+>>>>>>>>>>>>PROMPT_END: 14
+>>>>>>>>>>>PROMPT_START: 15
+What are tidal forces, and how do they relate to astrophysics?
+>>>>>>>>>>>>PROMPT_END: 15
+>>>>>>>>>>>PROMPT_START: 16
+What will be the impact on the value of the Euro if the referendum in Greece swings either way?
+>>>>>>>>>>>>PROMPT_END: 16
+>>>>>>>>>>>PROMPT_START: 17
+Why does popped popcorn have less calories than unpopped kernels?
+>>>>>>>>>>>>PROMPT_END: 17
+>>>>>>>>>>>PROMPT_START: 18
+Pantheism
+>>>>>>>>>>>>PROMPT_END: 18
+>>>>>>>>>>>PROMPT_START: 19
+What makes you a compatible bone marrow donor?
+>>>>>>>>>>>>PROMPT_END: 19
+>>>>>>>>>>>PROMPT_START: 20
+Why do some people of Iranian decent identify as Persian?
+>>>>>>>>>>>>PROMPT_END: 20
+>>>>>>>>>>>PROMPT_START: 21
+Now that it's egg nog season. How and what is egg nog made out of?
+>>>>>>>>>>>>PROMPT_END: 21
+>>>>>>>>>>>PROMPT_START: 22
+How do pressing charges work?
+>>>>>>>>>>>>PROMPT_END: 22
+>>>>>>>>>>>PROMPT_START: 23
+Rastafariansm
+>>>>>>>>>>>>PROMPT_END: 23
+>>>>>>>>>>>PROMPT_START: 24
+Why is shoveling snow off your sidewalk not covered by the Good Samaritan law if someone were to slip and injure themselves in America?
+>>>>>>>>>>>>PROMPT_END: 24
+>>>>>>>>>>>PROMPT_START: 25
+How does food get through our stomach without taking stomach acid with it?
+>>>>>>>>>>>>PROMPT_END: 25
+>>>>>>>>>>>PROMPT_START: 26
+What's going on in Greece right now.
+>>>>>>>>>>>>PROMPT_END: 26
+>>>>>>>>>>>PROMPT_START: 27
+What is the 'missing link' in evolution. Why is it said that evolution seems to have skipped a step in going to homo sapiens?
+>>>>>>>>>>>>PROMPT_END: 27
+>>>>>>>>>>>PROMPT_START: 28
+Can someone please explain to me how WiFi works LI5?
+>>>>>>>>>>>>PROMPT_END: 28
+>>>>>>>>>>>PROMPT_START: 29
+Why we need the electoral college in the United States
+>>>>>>>>>>>>PROMPT_END: 29
+>>>>>>>>>>>PROMPT_START: 30
+What kind of loopholes do corporations use to avoid tax?
+>>>>>>>>>>>>PROMPT_END: 30
+>>>>>>>>>>>PROMPT_START: 31
+Racism on 4chan
+>>>>>>>>>>>>PROMPT_END: 31
+>>>>>>>>>>>PROMPT_START: 32
+How do people with different alphabets program?
+>>>>>>>>>>>>PROMPT_END: 32
+>>>>>>>>>>>PROMPT_START: 33
+Why are there so many states in America when compared to the only marginally smaller Australia?
+>>>>>>>>>>>>PROMPT_END: 33
+>>>>>>>>>>>PROMPT_START: 34
+How can the body of some animals like Cows, Horses, etc. that only eat grass make those huge muscles?
+>>>>>>>>>>>>PROMPT_END: 34
+>>>>>>>>>>>PROMPT_START: 35
+Why do ice cubes bond together only after adding fluid?
+>>>>>>>>>>>>PROMPT_END: 35
+>>>>>>>>>>>PROMPT_START: 36
+Why does a harmonic series diverge while the sequence converges?
+>>>>>>>>>>>>PROMPT_END: 36
+>>>>>>>>>>>PROMPT_START: 37
+What would happen if the umbilical cord of a newborn was never clamped or cut? Would it be possible for the newborn to grow up and live life into adulthood like that?
+>>>>>>>>>>>>PROMPT_END: 37
+>>>>>>>>>>>PROMPT_START: 38
+Why is US police culture so different from police cultures in other developed nations?
+>>>>>>>>>>>>PROMPT_END: 38
+>>>>>>>>>>>PROMPT_START: 39
+Why do console game always run at 30 fps or 60 fps? Why does nothing ever run at 45?
+>>>>>>>>>>>>PROMPT_END: 39
+>>>>>>>>>>>PROMPT_START: 40
+Why do street numbers start in the 1000's even on short streets?
+>>>>>>>>>>>>PROMPT_END: 40
+>>>>>>>>>>>PROMPT_START: 41
+Can my ISP sell all my past internet history? Or just the stuff from this day forward?
+>>>>>>>>>>>>PROMPT_END: 41
+>>>>>>>>>>>PROMPT_START: 42
+I'm tone deaf, explain how you perceives tone.
+>>>>>>>>>>>>PROMPT_END: 42
+>>>>>>>>>>>PROMPT_START: 43
+Climate change. Why do people say it is a lie and what are the FACTS?
+>>>>>>>>>>>>PROMPT_END: 43
+>>>>>>>>>>>PROMPT_START: 44
+Why are there so many white men/asian women couples?
+>>>>>>>>>>>>PROMPT_END: 44
+>>>>>>>>>>>PROMPT_START: 45
+Why don't cities pay for fiber installation in rural areas?
+>>>>>>>>>>>>PROMPT_END: 45
+>>>>>>>>>>>PROMPT_START: 46
+Would a woman who has had her " Tubes tied " still get her period?
+>>>>>>>>>>>>PROMPT_END: 46
+>>>>>>>>>>>PROMPT_START: 47
+How does New Horizons have enough fuel to reach Pluto?
+>>>>>>>>>>>>PROMPT_END: 47
+>>>>>>>>>>>PROMPT_START: 48
+Why do you lose alcohol tolerance if you take a break from drinking?
+>>>>>>>>>>>>PROMPT_END: 48
+>>>>>>>>>>>PROMPT_START: 49
+What is is it that makes smoked marijuana and skunk spray smell so similar?
+>>>>>>>>>>>>PROMPT_END: 49
+>>>>>>>>>>>PROMPT_START: 50
+Apartment Squatting
+>>>>>>>>>>>>PROMPT_END: 50
+>>>>>>>>>>>PROMPT_START: 51
+Why do legal fees remain so high when the labor market has a surplus of lawyers?
+>>>>>>>>>>>>PROMPT_END: 51
+>>>>>>>>>>>PROMPT_START: 52
+Do Bugs Sleep?
+>>>>>>>>>>>>PROMPT_END: 52
+>>>>>>>>>>>PROMPT_START: 53
+How does a computer read binary?
+>>>>>>>>>>>>PROMPT_END: 53
+>>>>>>>>>>>PROMPT_START: 54
+why is coughing the last thing to go away when you catch a cold or flu?
+>>>>>>>>>>>>PROMPT_END: 54
+>>>>>>>>>>>PROMPT_START: 55
+How does Nair hair removal work?
+>>>>>>>>>>>>PROMPT_END: 55
+>>>>>>>>>>>PROMPT_START: 56
+Is Concerta like Ritalin at all?
+>>>>>>>>>>>>PROMPT_END: 56
+>>>>>>>>>>>PROMPT_START: 57
+How can simple "math" and equations tell us about the workings of the universe?
+>>>>>>>>>>>>PROMPT_END: 57
+>>>>>>>>>>>PROMPT_START: 58
+Can someone explain ketones to me (LI5)?
+>>>>>>>>>>>>PROMPT_END: 58
+>>>>>>>>>>>PROMPT_START: 59
+How payouts/odds are determined for Superfecta bets in horse racing
+>>>>>>>>>>>>PROMPT_END: 59
+>>>>>>>>>>>PROMPT_START: 60
+Why is the US military in Japan?
+>>>>>>>>>>>>PROMPT_END: 60
+>>>>>>>>>>>PROMPT_START: 61
+Why do we rock our head to music that we like ?
+>>>>>>>>>>>>PROMPT_END: 61
+>>>>>>>>>>>PROMPT_START: 62
+Schrödinger's cat
+>>>>>>>>>>>>PROMPT_END: 62
+>>>>>>>>>>>PROMPT_START: 63
+Why did China and other non-European countries not have more advanced technology if they didn't experience the Dark Ages?
+>>>>>>>>>>>>PROMPT_END: 63
+>>>>>>>>>>>PROMPT_START: 64
+If we jammed all geysers, could we cause a catastrophe ?
+>>>>>>>>>>>>PROMPT_END: 64
+>>>>>>>>>>>PROMPT_START: 65
+What are technical differences in making different kinds of yellow cheese?
+>>>>>>>>>>>>PROMPT_END: 65
+>>>>>>>>>>>PROMPT_START: 66
+How does the ink from pens manage to not flow out of the tube?
+>>>>>>>>>>>>PROMPT_END: 66
+>>>>>>>>>>>PROMPT_START: 67
+Derivatives
+>>>>>>>>>>>>PROMPT_END: 67
+>>>>>>>>>>>PROMPT_START: 68
+Why are so many old bands coming back and changing their style?
+>>>>>>>>>>>>PROMPT_END: 68
+>>>>>>>>>>>PROMPT_START: 69
+What causes us go through different style preferences and changes through the years?
+>>>>>>>>>>>>PROMPT_END: 69
+>>>>>>>>>>>PROMPT_START: 70
+Why in advanced physics can you only know a particles speed OR location (but not both)
+>>>>>>>>>>>>PROMPT_END: 70
+>>>>>>>>>>>PROMPT_START: 71
+How does supercooling water / nucleation work?
+>>>>>>>>>>>>PROMPT_END: 71
+>>>>>>>>>>>PROMPT_START: 72
+Why do you have to be 21 to go and play in a casino?
+>>>>>>>>>>>>PROMPT_END: 72
+>>>>>>>>>>>PROMPT_START: 73
+How some headphones are higher quality than others.
+>>>>>>>>>>>>PROMPT_END: 73
+>>>>>>>>>>>PROMPT_START: 74
+How did the electric chair ever become a thing? Wouldn't a gun shot to the head be much more certain to be much less painful?
+>>>>>>>>>>>>PROMPT_END: 74
+>>>>>>>>>>>PROMPT_START: 75
+What is the justification for the contents TTIP being such a secret?
+>>>>>>>>>>>>PROMPT_END: 75
+>>>>>>>>>>>PROMPT_START: 76
+Can someone explain Pi to me?
+>>>>>>>>>>>>PROMPT_END: 76
+>>>>>>>>>>>PROMPT_START: 77
+How has DSL become the advertising competition of modern-day internet service providers?
+>>>>>>>>>>>>PROMPT_END: 77
+>>>>>>>>>>>PROMPT_START: 78
+What would happen if Socci cannot host the olympics?
+>>>>>>>>>>>>PROMPT_END: 78
+>>>>>>>>>>>PROMPT_START: 79
+Why do I need electrolytes? What do they do? Why would I spend extra on special water?
+>>>>>>>>>>>>PROMPT_END: 79
+>>>>>>>>>>>PROMPT_START: 80
+What will happen to a tall building if a tornado went through it?
+>>>>>>>>>>>>PROMPT_END: 80
+>>>>>>>>>>>PROMPT_START: 81
+Why do trees change different colors in the fall? For example, why does one tree turn red while another tree turns yellow?
+>>>>>>>>>>>>PROMPT_END: 81
+>>>>>>>>>>>PROMPT_START: 82
+What happens to the medals of sporting cheats after they are stripped of their titles.
+>>>>>>>>>>>>PROMPT_END: 82
+>>>>>>>>>>>PROMPT_START: 83
+Why drugs companies give half the people placebo's and half the people the actual drug when testing
+>>>>>>>>>>>>PROMPT_END: 83
+>>>>>>>>>>>PROMPT_START: 84
+Why isn't national debt treated like a national emergency?
+>>>>>>>>>>>>PROMPT_END: 84
+>>>>>>>>>>>PROMPT_START: 85
+What's the difference on this new HDR TVs ?
+>>>>>>>>>>>>PROMPT_END: 85
+>>>>>>>>>>>PROMPT_START: 86
+How is it even remotely possible for frigate birds fly for months without stopping?
+>>>>>>>>>>>>PROMPT_END: 86
+>>>>>>>>>>>PROMPT_START: 87
+.DLL Files
+>>>>>>>>>>>>PROMPT_END: 87
+>>>>>>>>>>>PROMPT_START: 88
+What the Unabomber is and why it's so important
+>>>>>>>>>>>>PROMPT_END: 88
+>>>>>>>>>>>PROMPT_START: 89
+why does the quality of my hand writing differ based on the quality of the pen?
+>>>>>>>>>>>>PROMPT_END: 89
+>>>>>>>>>>>PROMPT_START: 90
+How does a nuke spread radiation all over the place?
+>>>>>>>>>>>>PROMPT_END: 90
+>>>>>>>>>>>PROMPT_START: 91
+Is Australian Rules Football most similar to rugby, soccer, or American football, in gameplay and needed skills?
+>>>>>>>>>>>>PROMPT_END: 91
+>>>>>>>>>>>PROMPT_START: 92
+The EM Drive
+>>>>>>>>>>>>PROMPT_END: 92
+>>>>>>>>>>>PROMPT_START: 93
+How is it known for definite that hydrogen is the most abundant element in the Universe?
+>>>>>>>>>>>>PROMPT_END: 93
+>>>>>>>>>>>PROMPT_START: 94
+Why do porn sites allow their pop-up ads to potentially contain malicious malware?
+>>>>>>>>>>>>PROMPT_END: 94
+>>>>>>>>>>>PROMPT_START: 95
+How does a volcano erupt?
+>>>>>>>>>>>>PROMPT_END: 95
+>>>>>>>>>>>PROMPT_START: 96
+why does it feel good to crack your back?
+>>>>>>>>>>>>PROMPT_END: 96
+>>>>>>>>>>>PROMPT_START: 97
+How was monsanto allowed to sue farmers when monsanto seeds invaded their land and crops due to winds?
+>>>>>>>>>>>>PROMPT_END: 97
+>>>>>>>>>>>PROMPT_START: 98
+How do they put sponsors under the ice rink?
+>>>>>>>>>>>>PROMPT_END: 98
+>>>>>>>>>>>PROMPT_START: 99
+Why is it bad to mix your alcohols, such as drinking both gin and wine in one sitting?
+>>>>>>>>>>>>PROMPT_END: 99
+>>>>>>>>>>>PROMPT_START: 100
+What are sin, cos, and tan (not how to use them in math, but, fundamentally what they are)
+>>>>>>>>>>>>PROMPT_END: 100
