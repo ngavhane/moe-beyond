@@ -5,7 +5,6 @@ import re
 import csv
 from collections import defaultdict
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from transformers import BitsAndBytesConfig
 import gc
 
 def main():
@@ -21,13 +20,10 @@ def main():
     # Load model
     print(f"Loading model {checkpoint}...")
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, trust_remote_code=True)
-    quantization_config = BitsAndBytesConfig(
-        load_in_8bit=True,  # or load_in_4bit=True if you want 4-bit
-    )
     model = AutoModelForCausalLM.from_pretrained(
         checkpoint,
         trust_remote_code=True,
-        quantization_config=quantization_config,
+        load_in_8bit=True,
         device_map="auto"
     ).eval()
     print("Model loaded.")
@@ -66,7 +62,7 @@ def main():
     output_dir = os.path.expanduser("~/ngavhane-fs/dataset_csvs")
     os.makedirs(output_dir, exist_ok=True)
 
-    for 100, prompt_text in prompts:
+    for prompt_num, prompt_text in prompts:
         prompt_text = prompt_text.strip()
         output_file = os.path.join(output_dir, f"prompt_{prompt_num}_data.csv")
         print(f"Processing prompt {prompt_num} and saving to {output_file}")
@@ -76,7 +72,7 @@ def main():
             csv_writer = csv.writer(csvfile)
             # Write header without prompt number and prompt text
             csv_writer.writerow([
-                "Layer ID", "Batch Number", "Token", "Activated Expert IDs"
+                "Layer ID", "Batch Number", "Token", "Activated Expert IDs", "Token Embedding Vector"
             ])
             
             process_prompt(prompt_text, csv_writer, tokenizer, model)
@@ -134,7 +130,7 @@ def process_prompt(text, csv_writer, tokenizer, model):
 
                 # Write row to CSV without prompt number or prompt text
                 csv_writer.writerow([
-                    layer_idx, b, tok, ids
+                    layer_idx, b, tok, ids, embedding
                 ])
 
     finally:
