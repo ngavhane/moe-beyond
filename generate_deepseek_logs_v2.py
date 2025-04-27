@@ -62,7 +62,8 @@ def main():
     output_dir = os.path.expanduser("~/ngavhane-fs/dataset_csvs")
     os.makedirs(output_dir, exist_ok=True)
 
-    for 100, prompt_text in prompts:
+    
+    for prompt_num, prompt_text in prompts:
         prompt_text = prompt_text.strip()
         output_file = os.path.join(output_dir, f"prompt_{prompt_num}_data.csv")
         print(f"Processing prompt {prompt_num} and saving to {output_file}")
