@@ -4,16 +4,18 @@ import ast
 import os
 from scipy.spatial.distance import cosine
 from collections import OrderedDict
+from sklearn.cluster import KMeans
 
 
 # Parameters
 NUM_LAYERS = 27 # 27 b/c no Layer 0
 NUM_EXPERTS = 64
 EAMC_CAPACITY = 1000 # How many REAMs to store in EAMC
-CACHE_SIZE = 665  # How many experts can fit in GPU cache
-WARMUP_COUNT = 800 # How many prompts to include in EAMC
-PROMPT_PREDICT_START = 801
-PROMPT_PREDICT_END = 801
+CACHE_SIZE = 1600  # How many experts can fit in GPU cache
+WARMUP_COUNT = 1000 # How many prompts to include in EAMC
+PROMPT_PREDICT_START = 1501
+PROMPT_PREDICT_END = 1551
+NUM_CLUSTERS = 20  # Number of clusters for k-means
 
 # Path where CSVs are stored
 CSV_FOLDER = '../training_data_eamc'  # Adjust if different
@@ -23,26 +25,44 @@ class EAMC:
     def __init__(self, capacity):
         self.capacity = capacity
         self.collection = []          # raw REAMs
-        self.norm_collection = []     # normalized REAMs, kept in sync
+        self.cluster_centroids = None  # Will hold cluster centroids
+        self.cluster_assignments = None  # Will hold cluster assignments
 
     def add(self, ream):
-        norm = normalize_ream(ream)
         if len(self.collection) < self.capacity:
             self.collection.append(ream)
-            self.norm_collection.append(norm)
         else:
-            self.replace(ream, norm)
+            self.replace(ream)
 
-    def replace(self, new_ream, new_norm):
-        # find the closest stored REAM (by normalized distance)
+    def replace(self, new_ream):
+        # find the closest stored REAM (by distance)
         dists = [
-            cosine(r.flatten(), new_norm.flatten())
-            for r in self.norm_collection
+            cosine(r.flatten(), new_ream.flatten())
+            for r in self.collection
         ]
         idx = np.argmin(dists)
-        # overwrite both raw and normalized at that index
         self.collection[idx]      = new_ream
-        self.norm_collection[idx] = new_norm
+
+    def cluster_reams(self, n_clusters=NUM_CLUSTERS):
+        """Perform k-means clustering on collected REAMs"""
+        if len(self.collection) < n_clusters:
+            print(f"Warning: Not enough REAMs ({len(self.collection)}) for {n_clusters} clusters")
+            n_clusters = max(1, len(self.collection) // 2)
+        
+        # Flatten REAMs for clustering
+        flat_reams = np.array([ream.flatten() for ream in self.collection])
+        
+        # Perform k-means
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+        self.cluster_assignments = kmeans.fit_predict(flat_reams)
+        
+        # Store centroids in original REAM shape
+        self.cluster_centroids = []
+        for centroid in kmeans.cluster_centers_:
+            self.cluster_centroids.append(centroid.reshape(NUM_LAYERS, NUM_EXPERTS))
+            
+        print(f"K-means clustering complete: {n_clusters} clusters created")
+
 
 # Function to process one CSV file into an rEAM
 def process_csv_to_ream(file_path):
@@ -75,37 +95,44 @@ class ExpertCache:
             self.cache[expert_id] = True  # Add new expert
             return False  # Cache miss
 
-def normalize_ream(ream):
-    """
-    Global max-scale a REAM array.
-    ream: np.array of shape (num_layers, num_experts)
-    Returns a new array of the same shape with all values in [0,1].
-    """
-    max_val = ream.max()
-    if max_val == 0:
-        return ream.copy()   # nothing to scale
-    return ream / max_val
-
 
 def predict_eam(eamc, current_ream, k=5):
-    cur_norm = normalize_ream(current_ream).flatten()
-    # compute distances only against the cached, normalized collection
-    distances = [
-        cosine(stored.flatten(), cur_norm)
-        for stored in eamc.norm_collection
-    ]
+    curr_ream = current_ream.flatten()
     
-    # Find indices of k closest neighbors
-    k = min(k, len(distances))  # Make sure k is not larger than available REAMs
-    closest_indices = np.argsort(distances)[:k]
+    if eamc.cluster_centroids is not None:
+        # Find the closest cluster centroid
+        similarities = [
+            1 - cosine(centroid.flatten(), curr_ream)
+            for centroid in eamc.cluster_centroids
+        ]
+        
+        # Use the most similar centroid
+        best_idx = np.argmax(similarities)
+        
+        # Return the centroid as the prediction
+        return eamc.cluster_centroids[best_idx]
+    else:
+        # Fall back to original method if clustering wasn't performed
+        similarities = [
+            1 - cosine(stored.flatten(), curr_ream)
+            for stored in eamc.collection
+        ]
+        
+        # Find indices of k most similar neighbors (highest similarity)
+        k = min(k, len(similarities))  # Make sure k is not larger than available REAMs
+        closest_indices = np.argsort(similarities)[::-1][:k]  # Descending order for similarity
     
-    # Average the k closest REAMs
-    avg_ream = np.zeros_like(eamc.collection[0])
-    for idx in closest_indices:
-        avg_ream += eamc.collection[idx]
-    
-    avg_ream = avg_ream / k
-    return avg_ream
+        # Print cosine similarities of closest neighbors
+        for i in range(closest_indices.shape[0]):
+            print(similarities[closest_indices[i]])
+        
+        # Average the k closest REAMs
+        avg_ream = np.zeros_like(eamc.collection[0])
+        for idx in closest_indices:
+            avg_ream += eamc.collection[idx]
+        
+        avg_ream = avg_ream / k
+        return avg_ream
 
 def test_single_csv_predict_mode(file_path, eamc, warmup_count=10, top_k=6):
     df = pd.read_csv(file_path)
@@ -181,6 +208,9 @@ def main():
             print(f"Warning: prompt_{n}_data.csv not found, skipping.")
 
     print(f"WARMUP COMPLETE: {len(eamc.collection)} rEAMs stored in EAMC.\n")
+    
+    # Perform clustering on collected REAMs
+    eamc.cluster_reams(n_clusters=NUM_CLUSTERS)
 
     # 2) Define which prompts you want to test
     test_prompts = list(range(PROMPT_PREDICT_START, PROMPT_PREDICT_END + 1))
@@ -188,7 +218,6 @@ def main():
     # 3) Prepare accumulators
     total_hits = total_misses = 0
     total_pred_hits = total_pred_misses = 0
-    f1_scores = []
 
     # 4) Loop over each test file
     for test_n in test_prompts:
@@ -200,6 +229,11 @@ def main():
 
         hits, misses, pred_hits, pred_misses = \
             test_single_csv_predict_mode(test_path, eamc, warmup_count=10)
+
+        if hits == 0 and misses == 0:
+            continue
+        if pred_hits == 0 and pred_misses == 0:
+            continue
 
         total_hits       += hits
         total_misses     += misses
