@@ -1,6 +1,6 @@
-# DeepSeek Prompts
+# MoE-Beyond
 
-A repository for running and training models with DeepSeek. Follow the instructions below to get started with training the model.
+Transformer-Based Expert Activation Prediction for MoE models.
 
 ---
 
