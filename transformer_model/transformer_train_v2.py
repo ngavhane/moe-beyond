@@ -208,11 +208,15 @@ def validate(model, dataloader, device, writer, epoch):
             preds = torch.zeros_like(outputs).scatter(-1, topk_indices, 1.0)
             masked_preds = preds * mask.unsqueeze(-1)
 
-            for i in range(preds.shape[0]):  # Batch size
-                for j in range(int(mask[i].sum())):  # Valid tokens
+            # Print expert predictions with layer info
+            for i in range(preds.shape[0]):  # Loop over batch
+                for j in range(int(mask[i].sum())):  # Loop over tokens (non-padded positions)
                     active_experts = (preds[i, j] > 0).nonzero(as_tuple=True)[0].tolist()
-                    layer_id = int(layer_ids[i, j].item())  # <=== Added
-                    print(f"Sample {i}, Token {j}, Layer ID {layer_id}: Predicted Experts: {active_experts}")
+                    actual_experts = (targets[i, j] > 0).nonzero(as_tuple=True)[0].tolist()
+                    layer_id = int(layer_ids[i, j].item())
+                    print(f"Sample {i}, Token {j}, Layer {layer_id}:")
+                    print(f"  Predicted Experts: {active_experts}")
+                    print(f"  Actual Experts: {actual_experts}")
 
             masked_targets = targets * mask.unsqueeze(-1)
             all_preds.append(masked_preds.cpu().flatten())
@@ -236,7 +240,7 @@ def validate(model, dataloader, device, writer, epoch):
 def main():
     parser = argparse.ArgumentParser(description='Expert Activation Predictor Training')
     parser.add_argument('--data-dir', type=str, required=True)
-    parser.add_argument('--batch-size', type=int, default=32)
+    parser.add_argument('--batch-size', type=int, default=100)
     parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--log-dir', type=str, default='./logs')
@@ -308,7 +312,7 @@ def main():
     best_val_loss = float('inf')
     if os.path.exists(args.checkpoint_path):
         print(f"Loading checkpoint from {args.checkpoint_path}")
-        checkpoint = torch.load(args.checkpoint_path)
+        checkpoint = torch.load(args.checkpoint_path, weights_only=False)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         best_val_loss = checkpoint['best_val_loss']
