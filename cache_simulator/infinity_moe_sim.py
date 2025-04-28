@@ -196,6 +196,56 @@ def test_single_csv_predict_mode(file_path, eamc, warmup_count=10, top_k=6):
 
     return hits, misses, prediction_hits, prediction_misses
 
+def test_single_csv_predict_mode_with_predicted(file_path, warmup_count=10, top_k=6):
+    df = pd.read_csv(file_path)
+    df['token_idx'] = df.groupby('Layer ID').cumcount()
+    df = df.sort_values(['token_idx','Layer ID']).reset_index(drop=True)
+    df = df.drop(columns='token_idx')
+
+    cache = ExpertCache(CACHE_SIZE)
+    hits = misses = 0
+    prediction_hits = prediction_misses = 0
+
+    
+    warmup_count = 26 * warmup_count
+
+    for idx, row in df.iterrows():
+        layer = int(row['Layer ID'])
+
+        experts = ast.literal_eval(row['Activated Expert IDs'])
+        for e in experts:
+            cache.access((layer, e))   # just warm the cache
+        
+        if idx >= warmup_count:
+            break
+
+    for idx, row in df.iterrows():
+            if idx < warmup_count:
+                continue
+
+            layer = int(row['Layer ID'])
+            experts = ast.literal_eval(row['Activated Expert IDs'])
+
+            top_experts = row['Predicted Expert IDs']
+
+            # load predicted experts into cache (don't count these hits/misses)
+            for pe in top_experts:
+                cache.access((layer, pe))
+
+            # c) now measure prediction hits/misses & cache hits/misses
+            for actual in experts:
+                if actual in top_experts:
+                    prediction_hits += 1
+                else:
+                    prediction_misses += 1
+
+                if cache.access((layer, actual)):
+                    hits += 1
+                else:
+                    misses += 1
+
+
+    return hits, misses, prediction_hits, prediction_misses 
 
 def main():
     # 1) Warm-up your EAMC as before
