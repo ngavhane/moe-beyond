@@ -4,7 +4,7 @@ A repository for running and training models with DeepSeek. Follow the instructi
 
 ---
 
-## Instructions to Run Training
+## Setup
 
 ### 1. Create and Enter Project Directory
 First, create a directory for storing logs and navigate into it:
@@ -35,13 +35,15 @@ Clone this repository to your local machine:
 ```bash
 git clone <this_repo>
 ```
+---
+## Instructions to Run Training
 
-### 5. Run the Training Command
+### 1. Run the Training Command
 Now you're ready to run the training! Use the following command (sample below) to start training:
 
 ```bash
 python transformer_train.py \
-  --data-dir /home/ubuntu/ngavhane-fs/dataset_csvs/ \
+  --data-dir /path/to/dataset_csvs/ \
   --batch-size 4 \
   --epochs 50 \
   --lr 1e-4 \
@@ -54,9 +56,35 @@ python transformer_train.py \
   --max-files 400 \
   --max-length 512
 ```
+---
+## Instructions to Download Model (.pth file)
 
+### 1. Run the Git LFS Commands after cloning the repo
+```bash
+For Linux/Ubuntu
+sudo apt-get install git-lfs
+git clone <this_repo>
+cd /dir/with/model.pth/file/and/.gitattributes
+git lfs install
+git lfs pull
+```
+---
+## Instructions to Run Inference
+
+### 1. Run the Inference Command
+Now you're ready to run the infernce! Use the following command (sample below) to start running inference:
+
+```bash
+python transformer_train.py \
+  --data-dir /path/to/dataset_csvs/ \
+  --checkpoint-path ./logs/best_model.pth \
+  --max-files 400 \
+  --eval-only
+```
 ---
 
+
+
 ## License
-Add later
+TODO: Add license here
 ```
