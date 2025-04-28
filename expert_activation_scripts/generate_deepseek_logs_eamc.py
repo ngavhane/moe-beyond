@@ -62,9 +62,9 @@ def main():
     output_dir = os.path.expanduser("training_data_eamc")
     os.makedirs(output_dir, exist_ok=True)
 
-    i = 0
-
     for prompt_num, prompt_text in prompts:
+        if prompt_num < 1001:
+            continue
         prompt_text = prompt_text.strip()
         output_file = os.path.join(output_dir, f"prompt_{prompt_num}_data.csv")
         print(f"Processing prompt {prompt_num} and saving to {output_file}")
@@ -80,8 +80,7 @@ def main():
             process_prompt(prompt_text, csv_writer, tokenizer, model)
             gc.collect()
             torch.cuda.empty_cache()
-        i += 1
-        if i > 1000:
+        if prompt_num > 1999:
             break
 
     print(f"All prompts processed.")
