@@ -202,8 +202,18 @@ def validate(model, dataloader, device, writer, epoch):
             total_loss += loss.item()
             valid_positions += mask.sum() * NUM_EXPERTS
 
-            preds = (torch.sigmoid(outputs) > 0.5).float()
+            # Get top-6 expert indices per token
+            topk = 6
+            sigmoid_outputs = torch.sigmoid(outputs)
+            topk_indices = torch.topk(sigmoid_outputs, topk, dim=-1).indices
+
+            # Create binary predictions with top-6 experts only
+            preds = torch.zeros_like(outputs).scatter(-1, topk_indices, 1.0)
             masked_preds = preds * mask.unsqueeze(-1)
+
+            ### Use the statements below for static threshold based binary predictions
+            #preds = (torch.sigmoid(outputs) > 0.5).float()
+            #masked_preds = preds * mask.unsqueeze(-1)
             masked_targets = targets * mask.unsqueeze(-1)
             
             all_preds.append(masked_preds.cpu().flatten())
