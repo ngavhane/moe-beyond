@@ -211,6 +211,15 @@ def validate(model, dataloader, device, writer, epoch):
             preds = torch.zeros_like(outputs).scatter(-1, topk_indices, 1.0)
             masked_preds = preds * mask.unsqueeze(-1)
 
+
+
+            # Print expert predictions
+            for i in range(preds.shape[0]):  # Loop over batch
+                for j in range(mask[i].sum().int()):  # Loop over tokens (non-padded positions)
+                    active_experts = (preds[i, j] > 0).nonzero(as_tuple=True)[0].tolist()
+                    print(f"Sample {i}, Token {j}: Predicted Experts: {active_experts}")
+
+
             ### Use the statements below for static threshold based binary predictions
             #preds = (torch.sigmoid(outputs) > 0.5).float()
             #masked_preds = preds * mask.unsqueeze(-1)
@@ -262,14 +271,29 @@ def main():
     
     # Dataset and DataLoaders
     dataset = ExpertActivationDataset(args.data_dir, max_length=args.max_length, max_files=args.max_files)
-    train_size = int(0.8 * len(dataset))
-    val_size = len(dataset) - train_size
-    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+    
+    if args.eval_only:
+        val_dataset = dataset
+        val_loader = DataLoader(val_dataset, batch_size=args.batch_size, 
+                            collate_fn=collate_fn, pin_memory=True)
+    else:
+        train_size = int(0.8 * len(dataset))
+        val_size = len(dataset) - train_size
+        train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+        train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
+                              shuffle=True, collate_fn=collate_fn, pin_memory=True)
+        val_loader = DataLoader(val_dataset, batch_size=args.batch_size, 
+                            collate_fn=collate_fn, pin_memory=True)
 
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
-                             shuffle=True, collate_fn=collate_fn, pin_memory=True)
-    val_loader = DataLoader(val_dataset, batch_size=args.batch_size, 
-                           collate_fn=collate_fn, pin_memory=True)
+
+    #train_size = int(0.8 * len(dataset))
+    #val_size = len(dataset) - train_size
+    #train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
+    #train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
+    #                         shuffle=True, collate_fn=collate_fn, pin_memory=True)
+    #val_loader = DataLoader(val_dataset, batch_size=args.batch_size, 
+    #                       collate_fn=collate_fn, pin_memory=True)
 
     # Model and Optimizer
     model = ExpertPredictor(
