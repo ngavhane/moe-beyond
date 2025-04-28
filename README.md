@@ -35,6 +35,7 @@ Clone this repository to your local machine:
 ```bash
 git clone <this_repo>
 ```
+---
 ## Instructions to Run Training
 
 ### 1. Run the Training Command
@@ -55,8 +56,20 @@ python transformer_train.py \
   --max-files 400 \
   --max-length 512
 ```
+---
+## Instructions to Download Model (.pth file)
 
-## Instructions to Run Training
+### 1. Run the Git LFS Commands after cloning the repo
+```bash
+For Linux/Ubuntu
+sudo apt-get install git-lfs
+git clone <this_repo>
+cd /dir/with/model.pth/file/and/.gitattributes
+git lfs install
+git lfs pull
+```
+---
+## Instructions to Run Inference
 
 ### 1. Run the Inference Command
 Now you're ready to run the infernce! Use the following command (sample below) to start running inference:
@@ -68,8 +81,9 @@ python transformer_train.py \
   --max-files 400 \
   --eval-only
 ```
-
 ---
+
+
 
 ## License
 TODO: Add license here
