@@ -11,14 +11,14 @@ from sklearn.cluster import KMeans
 NUM_LAYERS = 27 # 27 b/c no Layer 0
 NUM_EXPERTS = 64
 EAMC_CAPACITY = 1000 # How many REAMs to store in EAMC
-CACHE_SIZE = 1600  # How many experts can fit in GPU cache
-WARMUP_COUNT = 1000 # How many prompts to include in EAMC
-PROMPT_PREDICT_START = 1501
-PROMPT_PREDICT_END = 1551
-NUM_CLUSTERS = 20  # Number of clusters for k-means
+EAMC_SIZE = 10 # How many prompts to include in EAMC
+PROMPT_PREDICT_START = 1
+PROMPT_PREDICT_END = 100
+NUM_CLUSTERS = 1  # Number of clusters for k-means
 
 # Path where CSVs are stored
-CSV_FOLDER = '../training_data_eamc'  # Adjust if different
+CSV_FOLDER_EAMC = '../training_data_eamc'  # Adjust if different
+CSV_FOLDER = '../test_datasets/predicted_csvs'  # Adjust if different
 
 # EAMC Class
 class EAMC:
@@ -83,6 +83,12 @@ class ExpertCache:
         self.cache_size = cache_size
         self.cache = OrderedDict()
 
+        # Randomly initialize cache (key: (layer, expert), value: bool)
+        all_experts = [(layer, expert) for layer in range(1, NUM_LAYERS) for expert in range(NUM_EXPERTS)]
+        np.random.shuffle(all_experts)  # Shuffle all possible experts
+        for expert_id in all_experts[:cache_size]:
+            self.cache[expert_id] = True
+
     def access(self, expert_id):
         if expert_id in self.cache:
             # Move accessed item to end (most recently used)
@@ -134,13 +140,13 @@ def predict_eam(eamc, current_ream, k=5):
         avg_ream = avg_ream / k
         return avg_ream
 
-def test_single_csv_predict_mode(file_path, eamc, warmup_count=10, top_k=6):
+def test_single_csv_predict_mode(file_path, eamc, cache_size, warmup_count=10, top_k=6):
     df = pd.read_csv(file_path)
     df['token_idx'] = df.groupby('Layer ID').cumcount()
     df = df.sort_values(['token_idx','Layer ID']).reset_index(drop=True)
     df = df.drop(columns='token_idx')
 
-    cache = ExpertCache(CACHE_SIZE)
+    cache = ExpertCache(cache_size)
     hits = misses = 0
     prediction_hits = prediction_misses = 0
 
@@ -173,7 +179,7 @@ def test_single_csv_predict_mode(file_path, eamc, warmup_count=10, top_k=6):
 
         # b) only consider top_k on this token's layer
         top_experts = np.argsort(predicted_ream[layer])[::-1][:top_k]
-
+        
         # load predicted experts into cache (don't count these hits/misses)
         for pe in top_experts:
             cache.access((layer, pe))
@@ -196,13 +202,13 @@ def test_single_csv_predict_mode(file_path, eamc, warmup_count=10, top_k=6):
 
     return hits, misses, prediction_hits, prediction_misses
 
-def test_single_csv_predict_mode_with_predicted(file_path, warmup_count=10, top_k=6):
+def test_single_csv_predict_mode_with_predicted(file_path, cache_size, warmup_count=10, top_k=6):
     df = pd.read_csv(file_path)
     df['token_idx'] = df.groupby('Layer ID').cumcount()
     df = df.sort_values(['token_idx','Layer ID']).reset_index(drop=True)
     df = df.drop(columns='token_idx')
 
-    cache = ExpertCache(CACHE_SIZE)
+    cache = ExpertCache(cache_size)
     hits = misses = 0
     prediction_hits = prediction_misses = 0
 
@@ -226,7 +232,7 @@ def test_single_csv_predict_mode_with_predicted(file_path, warmup_count=10, top_
             layer = int(row['Layer ID'])
             experts = ast.literal_eval(row['Activated Expert IDs'])
 
-            top_experts = row['Predicted Expert IDs']
+            top_experts = ast.literal_eval(row['Predicted Expert IDs'])
 
             # load predicted experts into cache (don't count these hits/misses)
             for pe in top_experts:
@@ -250,8 +256,8 @@ def test_single_csv_predict_mode_with_predicted(file_path, warmup_count=10, top_
 def main():
     # 1) Warm-up your EAMC as before
     eamc = EAMC(capacity=EAMC_CAPACITY)
-    for n in range(1, WARMUP_COUNT):
-        file_path = os.path.join(CSV_FOLDER, f'prompt_{n}_data.csv')
+    for n in range(1, EAMC_SIZE):
+        file_path = os.path.join(CSV_FOLDER_EAMC, f'prompt_{n}_data.csv')
         if os.path.exists(file_path):
             eamc.add(process_csv_to_ream(file_path))
         else:
@@ -265,50 +271,55 @@ def main():
     # 2) Define which prompts you want to test
     test_prompts = list(range(PROMPT_PREDICT_START, PROMPT_PREDICT_END + 1))
 
-    # 3) Prepare accumulators
-    total_hits = total_misses = 0
-    total_pred_hits = total_pred_misses = 0
+    # Test different cache sizes (10% increments of 1664)
+    cache_sizes = [int(1664 * (i/10)) for i in range(1, 11)]
+    results = []
 
-    # 4) Loop over each test file
-    for test_n in test_prompts:
-        test_file = f'prompt_{test_n}_data.csv'
-        test_path = os.path.join(CSV_FOLDER, test_file)
-        if not os.path.exists(test_path):
-            print(f"  • {test_file} not found, skipping.")
-            continue
+    for cache_size in cache_sizes:
+        # 3) Prepare accumulators
+        total_hits = total_misses = 0
+        total_pred_hits = total_pred_misses = 0
 
-        hits, misses, pred_hits, pred_misses = \
-            test_single_csv_predict_mode(test_path, eamc, warmup_count=10)
+        # 4) Loop over each test file
+        for test_n in test_prompts:
+            test_file = f'prompt_{test_n}_data_predicted.csv'
+            test_path = os.path.join(CSV_FOLDER, test_file)
+            if not os.path.exists(test_path):
+                print(f"  • {test_file} not found, skipping.")
+                continue
 
-        if hits == 0 and misses == 0:
-            continue
-        if pred_hits == 0 and pred_misses == 0:
-            continue
+            hits, misses, pred_hits, pred_misses = \
+                test_single_csv_predict_mode_with_predicted(test_path, cache_size, warmup_count=10)
 
-        total_hits       += hits
-        total_misses     += misses
-        total_pred_hits  += pred_hits
-        total_pred_misses+= pred_misses
+            # hits, misses, pred_hits, pred_misses = \
+            #     test_single_csv_predict_mode(test_path, eamc, cache_size, warmup_count=10)
 
-        if (hits+misses) > 0:
-            hit_rate = hits / (hits+misses)
-        else:
-            hit_rate = 0.0
-        if (pred_hits+pred_misses) > 0:
-            pred_rate = pred_hits / (pred_hits+pred_misses)
-        else:
-            pred_rate = 0.0
+            if hits == 0 and misses == 0:
+                continue
+            if pred_hits == 0 and pred_misses == 0:
+                continue
 
-        print(f"Results for {test_file}:  cache hit rate {hit_rate:.2%}, "
-              f"pred hit rate {pred_rate:.2%}")
+            total_hits       += hits
+            total_misses     += misses
+            total_pred_hits  += pred_hits
+            total_pred_misses+= pred_misses
 
-    # 5) Compute aggregated metrics
-    overall_cache_rate = total_hits / (total_hits + total_misses)
-    overall_pred_rate  = total_pred_hits / (total_pred_hits + total_pred_misses)
+        # 5) Compute aggregated metrics
+        overall_cache_rate = total_hits / (total_hits + total_misses) if (total_hits + total_misses) > 0 else 0
+        overall_pred_rate  = total_pred_hits / (total_pred_hits + total_pred_misses) if (total_pred_hits + total_pred_misses) > 0 else 0
 
-    print("\n=== AGGREGATED OVER ALL TESTS ===")
-    print(f"Cache hit rate      : {overall_cache_rate:.2%}")
-    print(f"Prediction hit rate : {overall_pred_rate:.2%}")
+        results.append({
+            'cache_size': cache_size,
+            'cache_hit_rate': overall_cache_rate,
+            'prediction_hit_rate': overall_pred_rate
+        })
+
+    # Print results in a table format
+    print("\n=== RESULTS FOR DIFFERENT CACHE SIZES ===")
+    print(f"{'Cache Size':<12} {'Cache Hit Rate':<20} {'Prediction Hit Rate':<20}")
+    print("-" * 55)
+    for result in results:
+        print(f"{result['cache_size']:<12} {result['cache_hit_rate']:.2%}{'':<12} {result['prediction_hit_rate']:.2%}")
 
 if __name__ == "__main__":
     main()
