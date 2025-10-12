@@ -82,9 +82,3 @@ python transformer_train.py \
   --eval-only
 ```
 ---
-
-
-
-## License
-TODO: Add license here
-```
